@@ -1,55 +1,37 @@
+import logging
 from flask import Flask, render_template, request
-from cloze import process_text
 from deepseek_api import generate_deepseek_text
+
+# ---------------- Logging Setup ----------------
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    result = []
-    input_text = ""
-    error = ""
+    logger.info(f"Received {request.method} request at /")
+    generated_text = ""
     subject = ""
     level = "B1"
-    debug_log = []
+    error = ""
     if request.method == "POST":
-        debug_log.append("POST received. Entered POST handler.")
-        subject = request.form.get("subject", "").strip()
-        level = request.form.get("level", "B1").strip()
-        input_text = request.form.get("input_text", "")
-        debug_log.append(f"Subject: {subject}, Level: {level}")
-        if request.form.get("generate"):
-            debug_log.append("Form submit: GENERATE button pressed.")
-            try:
-                debug_log.append("Calling generate_deepseek_text (about to call)...")
-                input_text = generate_deepseek_text(subject, level)
-                debug_log.append("Returned from generate_deepseek_text (success).")
-                debug_log.append("Received from DeepSeek:\n" + input_text)
-                result = process_text(input_text)
-                debug_log.append("Processed result:\n" + str(result))
-            except Exception as e:
-                error = f"DeepSeek API error: {str(e)}"
-                debug_log.append("Exception: " + error)
-        elif request.form.get("submit"):
-            debug_log.append("Form submit: CLOZE button pressed.")
-            result = process_text(input_text)
-            debug_log.append("Processed result:\n" + str(result))
-    else:
-        debug_log.append("GET request.")
-    # Print to server console for now
-    print("\n--- Debug log ---")
-    for log in debug_log:
-        print(log)
-    print("--- End Debug log ---\n")
-    return render_template(
-        "index.html",
-        result=result,
-        input_text=input_text,
-        error=error,
-        subject=subject,
-        level=level,
-        debug_log=debug_log,
-    )
+        subject = request.form.get("subject", "")
+        level = request.form.get("level", "B1")
+        logger.info(f"Form submitted. Subject: {subject}, Level: {level}")
+        try:
+            generated_text = generate_deepseek_text(subject, level)
+        except Exception as e:
+            error = str(e)
+            logger.error(f"Error while generating text: {e}")
+    return render_template("index.html", generated_text=generated_text, subject=subject, level=level, error=error)
 
 if __name__ == "__main__":
+    logger.info("Starting Flask app.")
     app.run(debug=True)

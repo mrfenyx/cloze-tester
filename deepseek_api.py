@@ -1,25 +1,33 @@
 import yaml
+import logging
 from openai import OpenAI
 
-print("deepseek_api.py loaded!")  # Add this at top for sanity check
+logger = logging.getLogger(__name__)
 
 with open("config.yml", "r") as f:
     config = yaml.safe_load(f)
-DEEPSEEK_API_KEY = config["deepseek"]["api_key"]
-DEEPSEEK_BASE_URL = config["deepseek"]["base_url"]
+api_key = config["deepseek"]["api_key"]
+base_url = config["deepseek"]["base_url"]
 
-client = OpenAI(
-    api_key=DEEPSEEK_API_KEY,
-    base_url=DEEPSEEK_BASE_URL,
-)
+client = OpenAI(api_key=api_key, base_url=base_url)
 
 def generate_deepseek_text(subject, level):
     print("In generate_deepseek_text function...")  # Debug print
     prompt = (
-        f"You are an English language exercise generator."
-        f"Write a short text of 11-16 sentences about \"{subject}\" at CEFR level {level}.\n"
-        f"In each sentence, mark ONE word to be hidden by wrapping it in double brackets. Example: The car uses [[batteries]] for power."
-        f"Do not replace the word, just mark it. Do not mark words shorter than 4 letters. Choose important words (nouns, verbs, adjectives)."
+        f"Generate a short text of 11-16 sentences about \"{subject}\" at CEFR level {level}.\n"
+        f"INSTRUCTIONS FOR CLOZE EXERCISE:\n"
+        f"1. In each sentence, select ONE content word (noun, verb, adjective, or adverb) to hide\n"
+        f"2. The selected word must be 4 letters or longer\n"
+        f"3. Wrap ONLY the selected word in double brackets, like this: [[word]]\n"
+        f"4. Never mark proper nouns, articles, prepositions, or conjunctions\n"
+        f"5. Ensure exactly one word is marked per sentence\n"
+        f"6. Choose words that are important for understanding the sentence\n"
+        f"\n"
+        f"EXAMPLE:\n"
+        f"The scientist conducted an [[experiment]] with careful precision.\n"
+        f"Plants need [[sunlight]] to grow properly.\n"
+        f"\n"
+        f"Now generate the text about {subject} at level {level}, following all instructions precisely:"
     )
     try:
         response = client.chat.completions.create(
