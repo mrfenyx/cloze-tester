@@ -16,42 +16,36 @@
         btn.innerHTML = 'Hide Original Generated Text &#x25B2;';
       }
     }
+    // Auto-jump to next blank
     function setupBlankInputAutofocus() {
-    // Get all blank inputs in order
-    var blanks = Array.from(document.querySelectorAll('.blank-input'));
-    blanks.forEach(function(input, idx) {
+      var blanks = Array.from(document.querySelectorAll('.blank-input:not([readonly])'));
+      blanks.forEach(function(input, idx) {
         input.addEventListener('input', function(e) {
-        if (input.value.length === 1) {
-            // Move to next input
+          if (input.value.length === 1) {
             if (idx < blanks.length - 1) {
-            blanks[idx + 1].focus();
+              blanks[idx + 1].focus();
             }
-        }
+          }
         });
-        // Allow using left/right arrows and backspace to move between blanks
         input.addEventListener('keydown', function(e) {
-        if (e.key === "ArrowLeft" && idx > 0) {
+          if (e.key === "ArrowLeft" && idx > 0) {
             blanks[idx - 1].focus();
             e.preventDefault();
-        }
-        if (e.key === "ArrowRight" && idx < blanks.length - 1) {
+          }
+          if (e.key === "ArrowRight" && idx < blanks.length - 1) {
             blanks[idx + 1].focus();
             e.preventDefault();
-        }
-        // Jump back on backspace if empty
-        if (e.key === "Backspace" && input.value === "" && idx > 0) {
+          }
+          if (e.key === "Backspace" && input.value === "" && idx > 0) {
             blanks[idx - 1].focus();
             e.preventDefault();
-        }
+          }
         });
-    });
-    // Focus first blank input if available
-    if (blanks.length) blanks[0].focus();
+      });
+      if (blanks.length) blanks[0].focus();
     }
-
-    // Call this when the page is loaded or cloze is rendered
     window.addEventListener('DOMContentLoaded', function() {
-    setupBlankInputAutofocus();
+      setupBlankInputAutofocus();
     });
   </script>
 </head>
@@ -59,45 +53,56 @@
   <div class="container">
     <h1>DeepSeek Cloze Test Generator</h1>
     <form method="post" autocomplete="off">
-        <div class="input-row">
-            <label for="subject">Subject:</label>
-            <input type="text" id="subject" name="subject" value="{{ subject or '' }}" required>
-
-            <label for="level">CEFR Level:</label>
-            <select id="level" name="level" required>
-            {% for l in ["A1","A2","B1","B2","C1","C2"] %}
-                <option value="{{l}}" {% if level == l %}selected{% endif %}>{{l}}</option>
-            {% endfor %}
-            </select>
-            <button type="submit" name="generate">Generate</button>
-        </div>
+      <div class="input-row">
+        <label for="subject">Subject:</label>
+        <input type="text" id="subject" name="subject" value="{{ subject or '' }}" required>
+        <label for="level">CEFR Level:</label>
+        <select id="level" name="level" required>
+          {% for l in ["A1","A2","B1","B2","C1","C2"] %}
+            <option value="{{l}}" {% if level == l %}selected{% endif %}>{{l}}</option>
+          {% endfor %}
+        </select>
+        <button type="submit" name="generate">Generate</button>
+      </div>
     </form>
-
     {% if error %}
       <div class="error">{{ error }}</div>
     {% endif %}
 
     {% if generated_text %}
-        <button id="collapsible-btn" class="collapsible-btn" onclick="toggleCollapsible(); return false;">
-            Show Original Generated Text &#x25BC;
-        </button>
-        <div id="collapsible-content" class="collapsible-content">
-            {{ generated_text }}
-        </div>
+      <button id="collapsible-btn" class="collapsible-btn" onclick="toggleCollapsible(); return false;">
+        Show Original Generated Text &#x25BC;
+      </button>
+      <div id="collapsible-content" class="collapsible-content">
+        {{ generated_text }}
+      </div>
     {% endif %}
 
     {% if cloze_html %}
-        <div class="result">
-            <h2>Your Cloze Test:</h2>
-            <form id="cloze-form">
-            <div class="cloze">
-                {{ cloze_html | safe }}
-            </div>
-            <!-- Submit button for checking answers can go here in the next step -->
-            </form>
-        </div>
+      <div class="result">
+        <h2>Your Cloze Test:</h2>
+        <form method="post" autocomplete="off">
+          <div class="cloze">
+            {{ cloze_html|safe }}
+          </div>
+          <input type="hidden" name="generated_text" value="{{ generated_text }}">
+          <input type="hidden" name="blanks_info" value="{{ blanks_info }}">
+          <button type="submit" name="check">Check Answers</button>
+        </form>
+      </div>
     {% endif %}
 
+    {% if feedback_html %}
+      <div class="result">
+        <h2>Your Cloze Test (Feedback):</h2>
+        <div class="cloze">
+          {{ feedback_html|safe }}
+        </div>
+        <div class="score" style="margin-top:1em; font-weight:bold;">{{ score_str }}</div>
+        <br>
+        <a href="/">&#8592; Try another test</a>
+      </div>
+    {% endif %}
   </div>
 </body>
 </html>
