@@ -139,6 +139,34 @@ form {
   letter-spacing: .2px;
   margin-bottom: 0.32em;
 }
+.cloze-blank-group {
+  white-space: nowrap;
+  display: inline-block;
+}
+.blank-input {
+  width: 1.5em;
+  min-width: 1.2em;
+  max-width: 2em;
+  height: 1.8em;
+  font-size: 1.12em;
+  font-family: 'Fira Mono', 'Consolas', 'Menlo', 'Courier New', monospace;
+  text-align: center;
+  margin: 0 0.15em;
+  border: 1.2px solid #b3cfff;
+  border-radius: 5px;
+  background: #f6fbff;
+  color: #236;
+  box-shadow: 0 2px 5px 0 #c7e2fa44;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+  vertical-align: middle;
+}
+.blank-input:focus {
+  border-color: #256ddb;
+  background: #eaf3fe;
+  box-shadow: 0 0 0 2px #b3cfff88;
+}
+
 
 @media (max-width: 700px) {
   .container { padding: 18px 7px 10px 7px; }

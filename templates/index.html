@@ -16,6 +16,43 @@
         btn.innerHTML = 'Hide Original Generated Text &#x25B2;';
       }
     }
+    function setupBlankInputAutofocus() {
+    // Get all blank inputs in order
+    var blanks = Array.from(document.querySelectorAll('.blank-input'));
+    blanks.forEach(function(input, idx) {
+        input.addEventListener('input', function(e) {
+        if (input.value.length === 1) {
+            // Move to next input
+            if (idx < blanks.length - 1) {
+            blanks[idx + 1].focus();
+            }
+        }
+        });
+        // Allow using left/right arrows and backspace to move between blanks
+        input.addEventListener('keydown', function(e) {
+        if (e.key === "ArrowLeft" && idx > 0) {
+            blanks[idx - 1].focus();
+            e.preventDefault();
+        }
+        if (e.key === "ArrowRight" && idx < blanks.length - 1) {
+            blanks[idx + 1].focus();
+            e.preventDefault();
+        }
+        // Jump back on backspace if empty
+        if (e.key === "Backspace" && input.value === "" && idx > 0) {
+            blanks[idx - 1].focus();
+            e.preventDefault();
+        }
+        });
+    });
+    // Focus first blank input if available
+    if (blanks.length) blanks[0].focus();
+    }
+
+    // Call this when the page is loaded or cloze is rendered
+    window.addEventListener('DOMContentLoaded', function() {
+    setupBlankInputAutofocus();
+    });
   </script>
 </head>
 <body>
@@ -32,7 +69,7 @@
                 <option value="{{l}}" {% if level == l %}selected{% endif %}>{{l}}</option>
             {% endfor %}
             </select>
-            <button type="submit" name="generate">Generate with DeepSeek</button>
+            <button type="submit" name="generate">Generate</button>
         </div>
     </form>
 
@@ -49,12 +86,15 @@
         </div>
     {% endif %}
 
-    {% if cloze_result %}
+    {% if cloze_html %}
         <div class="result">
             <h2>Your Cloze Test:</h2>
+            <form id="cloze-form">
             <div class="cloze">
-            {{ cloze_result|join(' ') }}
+                {{ cloze_html | safe }}
             </div>
+            <!-- Submit button for checking answers can go here in the next step -->
+            </form>
         </div>
     {% endif %}
 
