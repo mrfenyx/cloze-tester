@@ -38,49 +38,46 @@ def index():
             except Exception as e:
                 error = str(e)
         elif "check" in request.form:
-            # Check answers
+            # Check answers (using flat_idx for all blanks, including hyphens/punct)
             generated_text = request.form.get("generated_text", "")
             blanks_info = json.loads(request.form.get("blanks_info", "[]"))
             total = len(blanks_info)
             correct = 0
-            blank_pattern = re.compile(r'\[\[(\w+)\]\]')
+            blank_pattern = re.compile(r'\[\[([^\]]+)\]\]')
             blank_id = 0
+            flat_idx = 0  # Flat input counter across all words
+
             def repl(m):
-                nonlocal blank_id, correct
+                nonlocal blank_id, correct, flat_idx
                 info = blanks_info[blank_id]
                 word = info['word']
                 prefix = info['prefix']
                 n_inputs = info['num_inputs']
                 user_input = ''
-                input_html = ''
-                word_correct = True
-                # Build the input group with coloring
+                input_fields = ''
+                is_correct = True
                 for i in range(n_inputs):
-                    val = request.form.get(f'blank_{blank_id}_{i}', '')
+                    val = request.form.get(f'blank_{flat_idx}', '')
                     user_input += val
-                    # Check each letter for now (but will color whole word below)
-                    input_html += f'<input type="text" value="{val}" maxlength="1" readonly class="blank-input">'
-                is_correct = (user_input.lower() == word[len(prefix):].lower())
-                if is_correct:
+                    # Compare each letter to the correct answer for is_correct (per word)
+                    if len(word[len(prefix):]) > i:
+                        if val.lower() != word[len(prefix):][i].lower():
+                            is_correct = False
+                    else:
+                        is_correct = False
+                    input_fields += f'<input type="text" value="{val}" maxlength="1" readonly class="blank-input{" correct" if is_correct else " incorrect"}">'
+                    flat_idx += 1
+                if is_correct and user_input.lower() == word[len(prefix):].lower():
                     correct += 1
-                    html = f'<span class="cloze-blank-group correct">{prefix}'
-                    for i in range(n_inputs):
-                        val = request.form.get(f'blank_{blank_id}_{i}', '')
-                        html += f'<input type="text" value="{val}" maxlength="1" readonly class="blank-input correct">'
-                    html += '</span>'
+                    html = f'<span class="cloze-blank-group correct">{prefix}{input_fields}</span>'
                 else:
-                    html = f'<span class="cloze-blank-group incorrect">{prefix}'
-                    for i in range(n_inputs):
-                        val = request.form.get(f'blank_{blank_id}_{i}', '')
-                        html += f'<input type="text" value="{val}" maxlength="1" readonly class="blank-input incorrect">'
-                    html += f'</span> <span class="correct-answer">({word})</span>'
+                    html = f'<span class="cloze-blank-group incorrect">{prefix}{input_fields}</span> <span class="correct-answer">({word})</span>'
                 blank_id += 1
                 return html
 
             feedback_html = Markup(blank_pattern.sub(repl, generated_text))
             score_str = f"{correct}/{total} correct"
 
-    # Pass everything to template
     return render_template(
         "index.html",
         subject=subject,
