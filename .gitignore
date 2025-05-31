@@ -41,6 +41,7 @@ htmlcov/
 # YAML/INI/Secrets
 config.yml
 config.ini
+.env
 
 # Package distribution
 build/

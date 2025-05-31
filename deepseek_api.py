@@ -1,15 +1,20 @@
-import yaml
+import os
 import logging
 from openai import OpenAI
+from dotenv import load_dotenv
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 
-with open("config.yml", "r") as f:
-    config = yaml.safe_load(f)
-api_key = config["deepseek"]["api_key"]
-base_url = config["deepseek"]["base_url"]
+API_KEY = os.getenv("DEEPSEEK_API_KEY")
+BASE_URL = os.getenv("BASE_URL", "https://api.deepseek.com")
 
-client = OpenAI(api_key=api_key, base_url=base_url)
+if not API_KEY:
+    raise Exception("DEEPSEEK_API_KEY not set.")
+if not BASE_URL:
+    raise Exception("BASE_URL not set.")
+
+client = OpenAI(api_key=API_KEY, base_url=BASE_URL)
 
 def generate_deepseek_text(subject, level):
     print("In generate_deepseek_text function...")  # Debug print

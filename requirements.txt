@@ -1,3 +1,5 @@
 flask
-pyyaml
 openai
+markupsafe
+python-dotenv
+
