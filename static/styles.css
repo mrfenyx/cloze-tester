@@ -193,3 +193,85 @@ form {
   .input-row input[type="text"], .input-row select { width: 100%; min-width: 0; }
   .input-row button { width: 100%; margin-left: 0; margin-top: 8px; }
 }
+
+/* Configuration Page/Card Styles */
+.config-link {
+  float: right;
+  color: #2462d2;
+  text-decoration: none;
+  font-size: 1em;
+  font-weight: 600;
+  margin-bottom: 18px;
+  margin-top: 5px;
+  letter-spacing: 0.5px;
+  transition: color 0.15s;
+  padding: 0 8px;
+  line-height: 2.2em;
+  border-radius: 7px;
+}
+.config-link:hover {
+  color: #169bd7;
+  background: #e9f2fe;
+  text-decoration: underline;
+}
+.config-card {
+  background: #fff;
+  max-width: 450px;
+  margin: 55px auto;
+  padding: 30px 32px 22px 32px;
+  border-radius: 18px;
+  box-shadow: 0 4px 18px 0 #2462d238;
+}
+.config-header {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #2462d2;
+  font-size: 1.5em;
+  letter-spacing: 1px;
+  font-weight: 700;
+  text-align: center;
+}
+.config-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1em;
+}
+.config-table th, .config-table td {
+  border: 1px solid #eaeaea;
+  padding: 7px 8px;
+  text-align: center;
+}
+.config-table th {
+  background: #f6f6fc;
+  color: #2462d2;
+  font-size: 1em;
+}
+.config-label {
+  font-weight: 600;
+  color: #2462d2;
+}
+.config-save-btn {
+  background: linear-gradient(90deg, #2462d2 60%, #38b6ff 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 30px;
+  font-weight: 600;
+  font-size: 1em;
+  margin-top: 8px;
+  box-shadow: 0 2px 8px 0 #256ddb1a;
+  cursor: pointer;
+  transition: background .18s, box-shadow .15s;
+}
+.config-save-btn:hover { background: linear-gradient(90deg, #169bd7 60%, #38b6ff 100%); }
+.success { color: #179b2c; text-align: center; margin-top: 12px; }
+.danger { color: #b40c0c; text-align: center; margin-top: 12px; }
+.back-link {
+  display: inline-block;
+  margin-bottom: 18px;
+  color: #2462d2;
+  text-decoration: none;
+  font-size: 1em;
+  font-weight: 600;
+}
+.back-link:hover { text-decoration: underline; }

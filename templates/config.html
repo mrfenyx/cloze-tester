@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Configuration - Cloze Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  </head>
+  <body>
+    <div class="config-card">
+      <a href="{{ url_for('index') }}" class="back-link">&#8592; Back</a>
+      <h1 class="config-header">Configuration</h1>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for cat, msg in messages %}
+            <div class="{{ cat }}">{{ msg }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      <form method="post">
+        <div style="margin-bottom:1em;">
+          <label for="default_cefr" class="config-label">Default CEFR Level:</label>
+          <select name="default_cefr" id="default_cefr">
+            {% for l in ["A1","A2","B1","B2","C1","C2"] %}
+              <option value="{{l}}" {% if config.default_cefr == l %}selected{% endif %}>{{l}}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <h3 class="config-label" style="margin-bottom:.5em;">Cloze Reveal Rules</h3>
+        <table class="config-table">
+          <tr>
+            <th>Max Length</th>
+            <th>Letters Revealed</th>
+          </tr>
+          {% for rule in config.cloze_reveal_rules %}
+          <tr>
+            <td><input type="number" name="max_length" value="{{ rule.max_length }}" min="1" required></td>
+            <td><input type="number" name="num_reveal" value="{{ rule.num_reveal }}" min="1" required></td>
+          </tr>
+          {% endfor %}
+          <!-- Empty row for adding a new rule -->
+          <tr>
+            <td><input type="number" name="max_length" value="" min="1"></td>
+            <td><input type="number" name="num_reveal" value="" min="1"></td>
+          </tr>
+        </table>
+        <button type="submit" class="config-save-btn">Save</button>
+      </form>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "default_cefr": "C2",
+  "cloze_reveal_rules": [
+    {
+      "max_length": 5,
+      "num_reveal": 1
+    },
+    {
+      "max_length": 8,
+      "num_reveal": 2
+    },
+    {
+      "max_length": 11,
+      "num_reveal": 3
+    },
+    {
+      "max_length": 100,
+      "num_reveal": 4
+    }
+  ]
+}

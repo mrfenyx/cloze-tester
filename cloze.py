@@ -1,18 +1,23 @@
 import re
 from markupsafe import Markup
 
-def blank_word(word, blank_id_start=0):
-    # Only letters/numbers are counted for the prefix and blanks; punctuation/hyphens are always visible.
+def get_num_reveal(length, reveal_rules):
+    for rule in reveal_rules:
+        if length <= rule['max_length']:
+            return rule['num_reveal']
+    return 1  # fallback
+
+def blank_word(word, blank_id_start=0, reveal_rules=None):
+    if reveal_rules is None:
+        reveal_rules = [
+            {"max_length": 5, "num_reveal": 1},
+            {"max_length": 8, "num_reveal": 2},
+            {"max_length": 11, "num_reveal": 3},
+            {"max_length": 100, "num_reveal": 4}
+        ]
     alnum_chars = [c for c in word if c.isalnum()]
     length = len(alnum_chars)
-    if length <= 5:
-        num_reveal = 1
-    elif length <= 7:
-        num_reveal = 2
-    elif length <= 9:
-        num_reveal = 3
-    else:
-        num_reveal = 4
+    num_reveal = get_num_reveal(length, reveal_rules)
 
     prefix_count = num_reveal
     current_letter = 0
@@ -29,17 +34,18 @@ def blank_word(word, blank_id_start=0):
                 blank_ids += 1
             current_letter += 1
         else:
-            # Always show hyphens/punctuation
             output += c
     output += '</span>'
     return Markup(output), blank_ids
 
-def process_text_with_inputs(text):
-    """
-    Returns (cloze_html, blanks_info)
-    - cloze_html: text with input fields (named blank_0, blank_1, ...)
-    - blanks_info: list of dicts: {'name', 'word', 'prefix', 'num_inputs'}
-    """
+def process_text_with_inputs(text, reveal_rules=None):
+    if reveal_rules is None:
+        reveal_rules = [
+            {"max_length": 5, "num_reveal": 1},
+            {"max_length": 8, "num_reveal": 2},
+            {"max_length": 11, "num_reveal": 3},
+            {"max_length": 100, "num_reveal": 4}
+        ]
     pattern = re.compile(r'\[\[([^\]]+)\]\]')
     output = ""
     last_end = 0
@@ -50,14 +56,7 @@ def process_text_with_inputs(text):
         word = m.group(1)
         alnum_chars = [c for c in word if c.isalnum()]
         length = len(alnum_chars)
-        if length <= 5:
-            num_reveal = 1
-        elif length <= 7:
-            num_reveal = 2
-        elif length <= 9:
-            num_reveal = 3
-        else:
-            num_reveal = 4
+        num_reveal = get_num_reveal(length, reveal_rules)
 
         # Build prefix (letters/numbers), then add all following alnums as inputs, but copy hyphens/punct as-is
         prefix = ''
@@ -67,10 +66,8 @@ def process_text_with_inputs(text):
                 prefix += c
                 current_letter += 1
 
-        # Count how many inputs (all alnums after the prefix)
         missing = length - len(prefix)
-        # Create the input group HTML
-        html_piece, next_id = blank_word(word, blank_id)
+        html_piece, next_id = blank_word(word, blank_id, reveal_rules=reveal_rules)
         output += html_piece
         blanks_info.append({
             'name': f'blank_{blank_id}',
