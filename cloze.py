@@ -3,9 +3,9 @@ import re
 def blank_word(word):
     length = len(word)
     if length <= 5:
-        return word[0] + '-' * (length - 1) + f'({length - 1})'
+        return word[0] + '-' * (length - 1) + f'({length})'
     else:
-        return word[:2] + '-' * (length - 2) + f'({length - 2})'
+        return word[:2] + '-' * (length - 2) + f'({length})'
 
 def blank_match(match):
     word = match.group(1)

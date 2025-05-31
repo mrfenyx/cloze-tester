@@ -41,24 +41,23 @@
     {% endif %}
 
     {% if generated_text %}
-      <button id="collapsible-btn" class="collapsible-btn" onclick="toggleCollapsible(); return false;">
-        Show Original Generated Text &#x25BC;
-      </button>
-      <div id="collapsible-content" class="collapsible-content">
-        {{ generated_text }}
-      </div>
+        <button id="collapsible-btn" class="collapsible-btn" onclick="toggleCollapsible(); return false;">
+            Show Original Generated Text &#x25BC;
+        </button>
+        <div id="collapsible-content" class="collapsible-content">
+            {{ generated_text }}
+        </div>
     {% endif %}
 
     {% if cloze_result %}
-      <div class="result">
-        <h2>Your Cloze Test:</h2>
-        <ol>
-          {% for sentence in cloze_result %}
-            <li class="cloze">{{ sentence }}</li>
-          {% endfor %}
-        </ol>
-      </div>
+        <div class="result">
+            <h2>Your Cloze Test:</h2>
+            <div class="cloze">
+            {{ cloze_result|join(' ') }}
+            </div>
+        </div>
     {% endif %}
+
   </div>
 </body>
 </html>
