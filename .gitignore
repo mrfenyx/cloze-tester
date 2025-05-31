@@ -1,0 +1,56 @@
+# Python bytecode and cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# VS Code settings
+.vscode/
+
+# Flask and Werkzeug logs
+instance/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Python environment files
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Jupyter Notebook checkpoints (if you ever add notebooks)
+.ipynb_checkpoints
+
+# Pytest cache
+.pytest_cache/
+
+# Coverage reports
+.coverage
+htmlcov/
+.tox/
+
+# YAML/INI/Secrets
+config.yml
+config.ini
+
+# Package distribution
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Database files (if any)
+*.sqlite3
+*.db
+
+# Other editor settings
+.idea/
