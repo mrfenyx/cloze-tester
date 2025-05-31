@@ -1,36 +1,64 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <title>DeepSeek Text Generator</title>
-    <style>
-      body { font-family: Arial, sans-serif; max-width: 700px; margin: auto; }
-      textarea { width: 100%; height: 160px; }
-      .result { margin-top: 2em; background: #f8f8f8; padding: 1em; border-radius: 5px; }
-      label { font-weight: bold; }
-    </style>
-  </head>
-  <body>
-    <h1>Generate English Text (DeepSeek)</h1>
-    <form method="post">
-      <label for="subject">Subject:</label>
-      <input type="text" id="subject" name="subject" value="{{ subject or '' }}" required>
-      &nbsp;
-      <label for="level">CEFR Level:</label>
-      <select id="level" name="level" required>
-        {% for l in ["A1","A2","B1","B2","C1","C2"] %}
-          <option value="{{l}}" {% if level == l %}selected{% endif %}>{{l}}</option>
-        {% endfor %}
-      </select>
-      <button type="submit">Generate with DeepSeek</button>
+<head>
+  <title>DeepSeek Cloze Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <script>
+    function toggleCollapsible() {
+      var btn = document.getElementById("collapsible-btn");
+      var content = document.getElementById("collapsible-content");
+      if (content.style.display === "block") {
+        content.style.display = "none";
+        btn.innerHTML = 'Show Original Generated Text &#x25BC;';
+      } else {
+        content.style.display = "block";
+        btn.innerHTML = 'Hide Original Generated Text &#x25B2;';
+      }
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h1>DeepSeek Cloze Test Generator</h1>
+    <form method="post" autocomplete="off">
+        <div class="input-row">
+            <label for="subject">Subject:</label>
+            <input type="text" id="subject" name="subject" value="{{ subject or '' }}" required>
+
+            <label for="level">CEFR Level:</label>
+            <select id="level" name="level" required>
+            {% for l in ["A1","A2","B1","B2","C1","C2"] %}
+                <option value="{{l}}" {% if level == l %}selected{% endif %}>{{l}}</option>
+            {% endfor %}
+            </select>
+            <button type="submit" name="generate">Generate with DeepSeek</button>
+        </div>
     </form>
+
     {% if error %}
-      <div style="color:red; margin-top:1em;">{{ error }}</div>
+      <div class="error">{{ error }}</div>
     {% endif %}
+
     {% if generated_text %}
-      <div class="result">
-        <h2>Generated Text:</h2>
-        <pre>{{ generated_text }}</pre>
+      <button id="collapsible-btn" class="collapsible-btn" onclick="toggleCollapsible(); return false;">
+        Show Original Generated Text &#x25BC;
+      </button>
+      <div id="collapsible-content" class="collapsible-content">
+        {{ generated_text }}
       </div>
     {% endif %}
-  </body>
+
+    {% if cloze_result %}
+      <div class="result">
+        <h2>Your Cloze Test:</h2>
+        <ol>
+          {% for sentence in cloze_result %}
+            <li class="cloze">{{ sentence }}</li>
+          {% endfor %}
+        </ol>
+      </div>
+    {% endif %}
+  </div>
+</body>
 </html>

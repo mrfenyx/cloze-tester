@@ -22,6 +22,7 @@ def generate_deepseek_text(subject, level):
         f"4. Never mark proper nouns, articles, prepositions, or conjunctions\n"
         f"5. Ensure exactly one word is marked per sentence\n"
         f"6. Choose words that are important for understanding the sentence\n"
+        f"7. Only return the sentences and nothing else\n"
         f"\n"
         f"EXAMPLE:\n"
         f"The scientist conducted an [[experiment]] with careful precision.\n"
