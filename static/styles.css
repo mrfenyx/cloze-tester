@@ -223,36 +223,53 @@ button:hover, .config-save-btn:hover {
   margin-bottom: 0.32em;
 }
 
-.blank-input {
-  width: 1em;
-  min-width: 1em;
-  max-width: 2em;
-  height: 1.5em;
-  font-size: 1em;
-  font-family: 'Fira Mono', 'Consolas', 'Menlo', 'Courier New', monospace;
-  text-align: center;
-  border: 1.2px solid #b3cfff;
-  border-radius: 5px;
-  background: #f6fbff;
-  color: #236;
-  box-shadow: 0 2px 5px #c7e2fa44;
-  transition: all var(--transition);
+.correct-answer {
+  color: #888;
+  font-size: 0.98em;
+  margin-left: 0.3em;
+  font-style: italic;
 }
 
-.blank-input:focus {
-  border-color: var(--primary);
-  background: #eaf3fe;
-  box-shadow: 0 0 0 2px #b3cfff88;
+/* Blank Input - Specific Styles */
+.cloze-blank-group {
+  white-space: nowrap;
+  display: inline-block;
+}
+.cloze .blank-input {
+  width: 1em !important;
+  min-width: 1em !important;
+  max-width: 2em !important;
+  height: 1.5em !important;
+  font-size: 1em !important;
+  font-family: 'Fira Mono', 'Consolas', 'Menlo', 'Courier New', monospace !important;
+  text-align: center !important;
+  border: 1.2px solid #b3cfff !important;
+  border-radius: 3px !important;
+  background: #f6fbff !important;
+  color: #223366 !important;
+  box-shadow: 0 2px 5px #c7e2fa44 !important;
+  transition: all var(--transition) !important;
+  outline: none !important;
+  margin: 0 0em !important;
+  padding: 0 !important;
+  line-height: 1 !important;
 }
 
-.blank-input.correct {
-  border-color: #30c96b;
-  background: var(--success-light);
+.cloze .blank-input:focus {
+  border-color: var(--primary) !important;
+  background: #eaf3fe !important;
+  box-shadow: 0 0 0 2px #b3cfff88 !important;
 }
 
-.blank-input.incorrect {
-  border-color: #ef3737;
-  background: #ffeaea;
+/* State Modifiers - Must come after base styles */
+.cloze .blank-input.correct {
+  border-color: #30c96b !important;
+  background: var(--success-light) !important;
+}
+
+.cloze .blank-input.incorrect {
+  border-color: #ef3737 !important;
+  background: #ffeaea !important;
 }
 
 /* Config Page */
