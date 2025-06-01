@@ -186,6 +186,27 @@ form {
   color: #2462d2;
   font-size: 1.15em;
 }
+.random-btn {
+  margin-left: 8px;
+  padding: 3px 14px;
+  font-size: 1em;
+  background: #e6f2fd;
+  color: #2462d2;
+  border: 1px solid #d0e6fa;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.16s, color 0.16s;
+}
+.random-btn:hover {
+  background: #c8e2fa;
+  color: #169bd7;
+}
+.subject-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  margin-bottom: 1em;
+}
 
 @media (max-width: 700px) {
   .container { padding: 18px 7px 10px 7px; }

@@ -36,6 +36,10 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+def load_subjects():
+    with open("subjects.json", "r", encoding="utf-8") as f:
+        return json.load(f)
+    
 app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "notsecure")
 
@@ -51,6 +55,7 @@ def index():
     feedback_html = ""
     score_str = ""
     reveal_rules = config.get("cloze_reveal_rules", [])
+    random_subjects = load_subjects()
 
     if request.method == "POST":
         if "generate" in request.form:
@@ -110,7 +115,8 @@ def index():
         generated_text=generated_text,
         blanks_info=json.dumps(blanks_info),
         score_str=score_str,
-        config=config
+        config=config,
+        random_subjects=random_subjects
     )
 
 @app.route("/config", methods=["GET", "POST"])

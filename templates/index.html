@@ -51,12 +51,15 @@
 </head>
 <body>
   <div class="container">
-    <a href="{{ url_for('config') }}" class="config-link" title="Configure settings">⚙️ Configure</a>
+    <a href="{{ url_for('config') }}" class="config-link" title="Configure settings">⚙️</a>
     <h1>DeepSeek Cloze Test Generator</h1>
     <form method="post" autocomplete="off">
       <div class="input-row">
-        <label for="subject">Subject:</label>
-        <input type="text" id="subject" name="subject" value="{{ subject or '' }}" required>
+        <div class="subject-row">
+          <label for="subject">Subject:</label>
+          <input type="text" id="subject" name="subject" value="{{ subject or '' }}" required>
+          <button type="button" class="random-btn" onclick="pickRandomSubject()">🎲</button>
+        </div>
         <label for="level">CEFR Level:</label>
         <select id="level" name="level" required>
           {% for l in ["A1","A2","B1","B2","C1","C2"] %}
@@ -105,5 +108,12 @@
       </div>
     {% endif %}
   </div>
+  <script>
+    const randomSubjects = {{ random_subjects|tojson | safe }};
+    function pickRandomSubject() {
+      const idx = Math.floor(Math.random() * randomSubjects.length);
+      document.getElementById('subject').value = randomSubjects[idx];
+    }
+  </script>
 </body>
 </html>
